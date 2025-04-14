@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Details - CulinaryAI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .recipe-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .recipe-title {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .recipe-description {
+            font-size: 1.3rem;
+            color: #34495e;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #3498db;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding-left: 25px;
+        }
+
+        .benefits-list li {
+            margin-bottom: 12px;
+            position: relative;
+            font-size: 1.2rem;
+            color: #34495e;
+            line-height: 1.6;
+        }
+
+        .benefits-list li::before {
+            content: "✓";
+            color: #2ecc71;
+            position: absolute;
+            left: -25px;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .ingredients-list, .instructions-list {
+            list-style: none;
+            padding-left: 25px;
+        }
+
+        .ingredients-list li, .instructions-list li {
+            margin-bottom: 12px;
+            position: relative;
+            font-size: 1.2rem;
+            color: #34495e;
+            line-height: 1.6;
+        }
+
+        .ingredients-list li::before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: -20px;
+            font-size: 1.5rem;
+        }
+
+        .instructions-list li::before {
+            content: counter(step);
+            counter-increment: step;
+            color: #3498db;
+            position: absolute;
+            left: -30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .instructions-list {
+            counter-reset: step;
+        }
+
+        .recipe-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: rgba(248, 249, 250, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-item h4 {
+            color: #3498db;
+            margin: 0;
+            font-size: 1.2rem;
+            min-width: 150px;
+        }
+
+        .info-item p {
+            color: #34495e;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .error-message {
+            text-align: center;
+            color: #e74c3c;
+            font-size: 1.3rem;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .nutrition-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+            background: rgba(248, 249, 250, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .nutrition-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .nutrition-item:last-child {
+            border-bottom: none;
+        }
+
+        .nutrition-item h4 {
+            color: #3498db;
+            margin: 0;
+            font-size: 1.2rem;
+            min-width: 150px;
+        }
+
+        .nutrition-item p {
+            color: #34495e;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .tips-list, .equipment-list {
+            list-style: none;
+            padding-left: 25px;
+        }
+
+        .tips-list li, .equipment-list li {
+            margin-bottom: 12px;
+            position: relative;
+            font-size: 1.2rem;
+            color: #34495e;
+            line-height: 1.6;
+        }
+
+        .tips-list li::before {
+            content: "💡";
+            position: absolute;
+            left: -25px;
+            font-size: 1.3rem;
+        }
+
+        .equipment-list li::before {
+            content: "🔧";
+            position: absolute;
+            left: -25px;
+            font-size: 1.3rem;
+        }
+
+        @media (max-width: 768px) {
+            .recipe-title {
+                font-size: 2rem;
+            }
+
+            .recipe-description {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .benefits-list li,
+            .ingredients-list li,
+            .instructions-list li {
+                font-size: 1.1rem;
+            }
+
+            .nutrition-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Recipe Details</h1>
+        </div>
+
+        {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+        {% else %}
+            <div class="recipe-card">
+                <h2 class="recipe-title">{{ food_name }}</h2>
+                <p class="recipe-description">{{ description }}</p>
+
+                <div class="recipe-info">
+                    <div class="info-item">
+                        <h4>Preparation Time</h4>
+                        <p>{{ recipe_details.preparation_time }}</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Cooking Time</h4>
+                        <p>{{ recipe_details.cooking_time }}</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Difficulty</h4>
+                        <p>{{ recipe_details.difficulty }}</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Servings</h4>
+                        <p>{{ recipe_details.servings }}</p>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">Benefits</h3>
+                    <ul class="benefits-list">
+                        {% for benefit in benefits %}
+                            <li>{{ benefit }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">Ingredients</h3>
+                    <ul class="ingredients-list">
+                        {% for ingredient in recipe_details.ingredients %}
+                            <li>{{ ingredient }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">Instructions</h3>
+                    <ul class="instructions-list">
+                        {% for instruction in recipe_details.instructions %}
+                            <li>{{ instruction }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">Nutritional Information (per serving)</h3>
+                    <div class="nutrition-grid">
+                        <div class="nutrition-item">
+                            <h4>Calories</h4>
+                            <p>{{ recipe_details.nutritional_info.calories }}</p>
+                        </div>
+                        <div class="nutrition-item">
+                            <h4>Protein</h4>
+                            <p>{{ recipe_details.nutritional_info.protein }}</p>
+                        </div>
+                        <div class="nutrition-item">
+                            <h4>Carbohydrates</h4>
+                            <p>{{ recipe_details.nutritional_info.carbs }}</p>
+                        </div>
+                        <div class="nutrition-item">
+                            <h4>Fat</h4>
+                            <p>{{ recipe_details.nutritional_info.fat }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">Tips</h3>
+                    <ul class="tips-list">
+                        {% for tip in recipe_details.tips %}
+                            <li>{{ tip }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">Required Equipment</h3>
+                    <ul class="equipment-list">
+                        {% for item in recipe_details.equipment %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html> 

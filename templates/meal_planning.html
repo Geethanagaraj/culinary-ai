@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Meal Planning - CulinaryAI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e74c3c;
+            --accent: #3498db;
+            --light: #ffffff;
+            --dark: #2c3e50;
+            --text: #333333;
+            --background: #f8f9fa;
+            --border: #e9ecef;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+            --info: #3498db;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            background: var(--light);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            color: var(--text);
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .planning-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            background: var(--background);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-section h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--light);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .calendar-container {
+            grid-column: 1 / -1;
+        }
+
+        .flatpickr-calendar {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .meal-preferences {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .preference-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--border);
+        }
+
+        .preference-option:hover {
+            border-color: var(--accent);
+        }
+
+        .preference-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .diet-preferences {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .diet-preferences .preference-option {
+            background: var(--light);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .diet-preferences .preference-option:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .diet-preferences .preference-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .diet-preferences .preference-option label {
+            flex-grow: 1;
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .diet-preferences .preference-option input[type="radio"]:checked + label {
+            color: var(--accent);
+        }
+
+        .diet-preferences .preference-option:has(input[type="radio"]:checked) {
+            border-color: var(--accent);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .submit-btn {
+            grid-column: 1 / -1;
+            background: var(--accent);
+            color: var(--light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 20px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: var(--accent);
+        }
+
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alternatives {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--background);
+            border-radius: 8px;
+        }
+
+        .alternatives h5 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .alternative-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .alternative-item:last-child {
+            border-bottom: none;
+        }
+
+        .alternative-item i {
+            color: var(--accent);
+        }
+
+        .meal-plan-result {
+            display: none;
+            margin-top: 40px;
+            padding: 30px;
+            background: var(--light);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .meal-plan-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .meal-plan-header h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .meal-plan-header p {
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .meal-day {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: var(--background);
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .meal-day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .meal-day-header h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .meal-item {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .meal-combination {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .main-dish {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .side-dishes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .side-dish {
+            background: var(--background);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .meal-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .meal-name {
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .meal-description {
+            color: var(--text);
+            opacity: 0.8;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .meal-item-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .meal-details {
+            background: var(--background);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .meal-details h5 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .ingredients-list,
+        .instructions-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ingredients-list li,
+        .instructions-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ingredients-list li:last-child,
+        .instructions-list li:last-child {
+            border-bottom: none;
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .nutrition-item {
+            background: var(--light);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .nutrition-item span {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .nutrition-item strong {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .shopping-list {
+            margin-top: 40px;
+            padding: 25px;
+            background: var(--background);
+            border-radius: 15px;
+        }
+
+        .shopping-list h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .shopping-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .shopping-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shopping-item i {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .substitutions {
+            background: var(--background);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .substitutions h5 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .substitution-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .substitution-item:last-child {
+            border-bottom: none;
+        }
+
+        .substitution-original {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .substitution-alternative {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .planning-form {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .meal-item-content {
+                grid-template-columns: 1fr;
+            }
+
+            .nutrition-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .shopping-items {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .advanced-options-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--accent);
+            color: var(--light);
+            border-radius: 8px;
+            text-decoration: none;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .advanced-options-link:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .advanced-options-link i {
+            transition: var(--transition);
+        }
+
+        .advanced-options-link:hover i {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Smart Meal Planning</h1>
+            <p>Create a personalized meal plan based on your preferences and dietary needs</p>
+        </div>
+
+        <form id="mealPlanningForm" class="planning-form">
+            <div class="form-section calendar-container">
+                <h3>Planning Period</h3>
+                <div class="form-group">
+                    <label for="dateRange">Select Dates</label>
+                    <input type="text" id="dateRange" name="dateRange" placeholder="Select dates" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Basic Information</h3>
+                <div class="form-group">
+                    <label for="peopleCount">Number of People</label>
+                    <input type="number" id="peopleCount" name="peopleCount" min="1" max="10" value="2" required>
+                </div>
+                <div class="form-group">
+                    <label for="budget">Budget per Day (₹)</label>
+                    <input type="number" id="budget" name="budget" min="100" step="100" value="500" required>
+                </div>
+                <div class="form-group">
+                    <label for="cookingTime">Maximum Cooking Time per Meal (minutes)</label>
+                    <input type="number" id="cookingTime" name="cookingTime" min="15" max="120" value="45" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Basic Preferences</h3>
+                <div class="form-group">
+                    <label for="cuisinePreference">Preferred Cuisine</label>
+                    <select id="cuisinePreference" name="cuisinePreference" required>
+                        <option value="indian">Indian</option>
+                        <option value="italian">Italian</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="mexican">Mexican</option>
+                        <option value="mixed">Mixed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Meal Types</label>
+                    <div class="meal-preferences">
+                        <div class="preference-option">
+                            <input type="checkbox" id="breakfast" name="mealTypes" value="breakfast" checked>
+                            <label for="breakfast">Breakfast</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="lunch" name="mealTypes" value="lunch" checked>
+                            <label for="lunch">Lunch</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="dinner" name="mealTypes" value="dinner" checked>
+                            <label for="dinner">Dinner</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="snacks" name="mealTypes" value="snacks">
+                            <label for="snacks">Snacks</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Advanced Options</h3>
+                <p>For more detailed dietary preferences and restrictions, click below:</p>
+                <a href="#" id="showAdvancedOptions" class="advanced-options-link">
+                    <i class="fas fa-chevron-right"></i> Show Advanced Dietary Options
+                </a>
+            </div>
+
+            <button type="submit" class="submit-btn">Generate Basic Meal Plan</button>
+        </form>
+
+        <!-- Advanced Options Form (Initially Hidden) -->
+        <form id="advancedOptionsForm" class="planning-form" style="display: none;">
+            <div class="form-section">
+                <h3>Dietary Preferences</h3>
+                <div class="form-group">
+                    <label>Diet Type</label>
+                    <div class="diet-preferences">
+                        <div class="preference-option">
+                            <input type="radio" id="vegetarian" name="dietType" value="vegetarian">
+                            <label for="vegetarian">Vegetarian</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="radio" id="vegan" name="dietType" value="vegan">
+                            <label for="vegan">Vegan</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="radio" id="pescatarian" name="dietType" value="pescatarian">
+                            <label for="pescatarian">Pescatarian</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="radio" id="omnivore" name="dietType" value="omnivore" checked>
+                            <label for="omnivore">Omnivore</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Dietary Goals</label>
+                    <div class="diet-goals">
+                        <div class="preference-option">
+                            <input type="checkbox" id="weightLoss" name="dietaryGoals" value="weightLoss">
+                            <label for="weightLoss">Weight Loss</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="muscleGain" name="dietaryGoals" value="muscleGain">
+                            <label for="muscleGain">Muscle Gain</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="heartHealth" name="dietaryGoals" value="heartHealth">
+                            <label for="heartHealth">Heart Health</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="diabetes" name="dietaryGoals" value="diabetes">
+                            <label for="diabetes">Diabetes Management</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="athletic" name="dietaryGoals" value="athletic">
+                            <label for="athletic">Athletic Performance</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Restrictions</label>
+                    <div class="diet-restrictions">
+                        <div class="preference-option">
+                            <input type="checkbox" id="glutenFree" name="dietaryRestrictions" value="glutenFree">
+                            <label for="glutenFree">Gluten-Free</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="dairyFree" name="dietaryRestrictions" value="dairyFree">
+                            <label for="dairyFree">Dairy-Free</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="lowCarb" name="dietaryRestrictions" value="lowCarb">
+                            <label for="lowCarb">Low-Carb</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="lowFat" name="dietaryRestrictions" value="lowFat">
+                            <label for="lowFat">Low-Fat</label>
+                        </div>
+                        <div class="preference-option">
+                            <input type="checkbox" id="lowSodium" name="dietaryRestrictions" value="lowSodium">
+                            <label for="lowSodium">Low-Sodium</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="allergies">Allergies (comma separated)</label>
+                    <input type="text" id="allergies" name="allergies" placeholder="e.g., nuts, shellfish, eggs">
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Generate Detailed Meal Plan</button>
+        </form>
+
+        <div class="loading">
+            <i class="fas fa-spinner"></i>
+            <p>Creating your meal plan...</p>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <div id="mealPlanResult" class="meal-plan-result"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Flatpickr calendar
+            const dateRangeInput = document.getElementById('dateRange');
+            if (dateRangeInput) {
+                flatpickr(dateRangeInput, {
+                    mode: "range",
+                    dateFormat: "Y-m-d",
+                    minDate: "today",
+                    maxDate: new Date().fp_incr(14), // 14 days from today
+                    disableMobile: false,
+                    allowInput: true,
+                    onChange: function(selectedDates, dateStr) {
+                        if (selectedDates.length === 2) {
+                            const startDate = selectedDates[0];
+                            const endDate = selectedDates[1];
+                            
+                            // Format dates without timezone conversion
+                            const formattedStartDate = startDate.getFullYear() + '-' + 
+                                String(startDate.getMonth() + 1).padStart(2, '0') + '-' + 
+                                String(startDate.getDate()).padStart(2, '0');
+                            const formattedEndDate = endDate.getFullYear() + '-' + 
+                                String(endDate.getMonth() + 1).padStart(2, '0') + '-' + 
+                                String(endDate.getDate()).padStart(2, '0');
+                            
+                            // Set the input value with the exact selected dates
+                            dateRangeInput.value = `${formattedStartDate} to ${formattedEndDate}`;
+                            dateRangeInput.setAttribute('data-start-date', formattedStartDate);
+                            dateRangeInput.setAttribute('data-end-date', formattedEndDate);
+                            
+                            // Validate date range
+                            const diffTime = Math.abs(endDate - startDate);
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                            
+                            if (diffDays > 14) {
+                                errorMessage.textContent = 'Date range cannot exceed 14 days';
+                                errorMessage.style.display = 'block';
+                                dateRangeInput.value = '';
+                            } else {
+                                errorMessage.style.display = 'none';
+                            }
+                        }
+                    },
+                    onClose: function(selectedDates, dateStr) {
+                        if (selectedDates.length === 2) {
+                            const startDate = selectedDates[0];
+                            const endDate = selectedDates[1];
+                            
+                            // Format dates without timezone conversion
+                            const formattedStartDate = startDate.getFullYear() + '-' + 
+                                String(startDate.getMonth() + 1).padStart(2, '0') + '-' + 
+                                String(startDate.getDate()).padStart(2, '0');
+                            const formattedEndDate = endDate.getFullYear() + '-' + 
+                                String(endDate.getMonth() + 1).padStart(2, '0') + '-' + 
+                                String(endDate.getDate()).padStart(2, '0');
+                            
+                            // Set the input value with the exact selected dates
+                            dateRangeInput.value = `${formattedStartDate} to ${formattedEndDate}`;
+                            dateRangeInput.setAttribute('data-start-date', formattedStartDate);
+                            dateRangeInput.setAttribute('data-end-date', formattedEndDate);
+                            
+                            // Validate date range
+                            const diffTime = Math.abs(endDate - startDate);
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                            
+                            if (diffDays > 14) {
+                                errorMessage.textContent = 'Date range cannot exceed 14 days';
+                                errorMessage.style.display = 'block';
+                                dateRangeInput.value = '';
+                            } else {
+                                errorMessage.style.display = 'none';
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Toggle advanced options
+            const showAdvancedOptions = document.getElementById('showAdvancedOptions');
+            const basicForm = document.getElementById('mealPlanningForm');
+            const advancedForm = document.getElementById('advancedOptionsForm');
+
+            showAdvancedOptions.addEventListener('click', function(e) {
+                e.preventDefault();
+                basicForm.style.display = 'none';
+                advancedForm.style.display = 'grid';
+            });
+
+            // Handle form submissions
+            const forms = [basicForm, advancedForm];
+            const loadingIndicator = document.querySelector('.loading');
+            const resultsContainer = document.getElementById('mealPlanResult');
+            const errorMessage = document.getElementById('errorMessage');
+
+            forms.forEach(form => {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // Show loading indicator
+                    loadingIndicator.style.display = 'block';
+                    resultsContainer.style.display = 'none';
+                    errorMessage.style.display = 'none';
+                    
+                    try {
+                        // Get form data
+                        const dateRangeInput = document.getElementById('dateRange');
+                        const startDate = dateRangeInput.getAttribute('data-start-date');
+                        const endDate = dateRangeInput.getAttribute('data-end-date');
+                        
+                        if (!startDate || !endDate) {
+                            throw new Error('Please select a valid date range');
+                        }
+
+                        const formData = {
+                            dateRange: `${startDate} to ${endDate}`,
+                            peopleCount: parseInt(document.getElementById('peopleCount').value),
+                            budget: parseInt(document.getElementById('budget').value),
+                            cuisinePreference: document.getElementById('cuisinePreference').value,
+                            cookingTime: parseInt(document.getElementById('cookingTime').value),
+                            mealTypes: Array.from(document.querySelectorAll('input[name="mealTypes"]:checked')).map(cb => cb.value)
+                        };
+
+                        // Add advanced options if available
+                        if (form === advancedForm) {
+                            formData.dietType = document.querySelector('input[name="dietType"]:checked').value;
+                            formData.dietaryGoals = Array.from(document.querySelectorAll('input[name="dietaryGoals"]:checked')).map(cb => cb.value);
+                            formData.dietaryRestrictions = Array.from(document.querySelectorAll('input[name="dietaryRestrictions"]:checked')).map(cb => cb.value);
+                            formData.allergies = document.getElementById('allergies').value;
+                        }
+
+                        // Validate form data
+                        if (!formData.dateRange) {
+                            throw new Error('Please select a date range');
+                        }
+                        if (formData.peopleCount < 1 || formData.peopleCount > 10) {
+                            throw new Error('Number of people must be between 1 and 10');
+                        }
+                        if (formData.budget < 100) {
+                            throw new Error('Budget must be at least ₹100 per day');
+                        }
+                        if (formData.cookingTime < 15 || formData.cookingTime > 120) {
+                            throw new Error('Cooking time must be between 15 and 120 minutes');
+                        }
+                        if (formData.mealTypes.length === 0) {
+                            throw new Error('Please select at least one meal type');
+                        }
+
+                        // Send request to server
+                        const response = await fetch('/generate_meal_plan', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Failed to generate meal plan');
+                        }
+
+                        const data = await response.json();
+                        
+                        // Display the meal plan
+                        displayMealPlan(data);
+                        
+                    } catch (error) {
+                        console.error('Error:', error);
+                        errorMessage.textContent = error.message || 'An error occurred while generating the meal plan';
+                        errorMessage.style.display = 'block';
+                    } finally {
+                        loadingIndicator.style.display = 'none';
+                    }
+                });
+            });
+
+            function displayMealPlan(data) {
+                try {
+                    // Validate the data structure
+                    if (!data || typeof data !== 'object') {
+                        throw new Error('Invalid meal plan data received');
+                    }
+
+                    // Clear previous results
+                    resultsContainer.innerHTML = '';
+                    
+                    // Create meal plan container
+                    const mealPlanContainer = document.createElement('div');
+                    mealPlanContainer.className = 'meal-plan-container';
+                    
+                    // Get the meal plan array
+                    const mealPlanArray = data.mealPlan;
+                    if (!Array.isArray(mealPlanArray)) {
+                        throw new Error('Meal plan data is missing or invalid');
+                    }
+                    
+                    // Add days
+                    mealPlanArray.forEach((day, index) => {
+                        if (!day || typeof day !== 'object') {
+                            console.warn(`Skipping invalid day data at index ${index}`);
+                            return;
+                        }
+
+                        const daySection = document.createElement('div');
+                        daySection.className = 'meal-day';
+                        
+                        const dayHeader = document.createElement('div');
+                        dayHeader.className = 'meal-day-header';
+                        
+                        const dayTitle = document.createElement('h3');
+                        dayTitle.textContent = `Day ${index + 1} - ${day.date}`;
+                        dayHeader.appendChild(dayTitle);
+                        
+                        daySection.appendChild(dayHeader);
+                        
+                        // Add meals
+                        if (Array.isArray(day.meals)) {
+                            day.meals.forEach(meal => {
+                                if (meal && typeof meal === 'object') {
+                                    const mealSection = document.createElement('div');
+                                    mealSection.className = 'meal-item';
+                                    
+                                    const mealHeader = document.createElement('div');
+                                    mealHeader.className = 'meal-item-header';
+                                    
+                                    const mealTypeTitle = document.createElement('h4');
+                                    mealTypeTitle.textContent = meal.mealType.charAt(0).toUpperCase() + meal.mealType.slice(1);
+                                    mealHeader.appendChild(mealTypeTitle);
+                                    
+                                    mealSection.appendChild(mealHeader);
+                                    
+                                    const mealContent = document.createElement('div');
+                                    mealContent.className = 'meal-item-content';
+                                    
+                                    // Main dish info
+                                    const mealInfo = document.createElement('div');
+                                    mealInfo.className = 'meal-info';
+                                    
+                                    const mealName = document.createElement('h5');
+                                    mealName.className = 'meal-name';
+                                    mealName.textContent = meal.name;
+                                    mealInfo.appendChild(mealName);
+                                    
+                                    if (meal.description) {
+                                        const mealDesc = document.createElement('p');
+                                        mealDesc.className = 'meal-description';
+                                        mealDesc.textContent = meal.description;
+                                        mealInfo.appendChild(mealDesc);
+                                    }
+                                    
+                                    // Nutrition info (simplified)
+                                    if (meal.nutrition) {
+                                        const nutritionInfo = document.createElement('div');
+                                        nutritionInfo.className = 'nutrition-info';
+                                        nutritionInfo.innerHTML = `
+                                            <p>Calories: ${meal.nutrition.calories || 'N/A'} | 
+                                               Protein: ${meal.nutrition.protein || 'N/A'} | 
+                                               Carbs: ${meal.nutrition.carbs || 'N/A'}</p>
+                                        `;
+                                        mealInfo.appendChild(nutritionInfo);
+                                    }
+                                    
+                                    mealContent.appendChild(mealInfo);
+                                    
+                                    // Alternatives (always show if available)
+                                    if (Array.isArray(meal.alternatives) && meal.alternatives.length > 0) {
+                                        const alternativesSection = document.createElement('div');
+                                        alternativesSection.className = 'alternatives';
+                                        
+                                        const alternativesTitle = document.createElement('h5');
+                                        alternativesTitle.textContent = 'Alternative Options';
+                                        alternativesSection.appendChild(alternativesTitle);
+                                        
+                                        const altList = document.createElement('ul');
+                                        altList.className = 'alternatives-list';
+                                        
+                                        meal.alternatives.slice(0, 3).forEach(alt => {
+                                            const altItem = document.createElement('li');
+                                            altItem.innerHTML = `
+                                                <span class="alt-name">${alt.name}</span>
+                                                ${alt.nutrition ? `<span class="alt-nutrition">(${alt.nutrition.calories || ''} cal)</span>` : ''}
+                                            `;
+                                            altList.appendChild(altItem);
+                                        });
+                                        
+                                        alternativesSection.appendChild(altList);
+                                        mealContent.appendChild(alternativesSection);
+                                    }
+                                    
+                                    mealSection.appendChild(mealContent);
+                                    daySection.appendChild(mealSection);
+                                }
+                            });
+                        }
+                        
+                        // Add daily totals (simplified)
+                        if (day.totalNutrition) {
+                            const totalsSection = document.createElement('div');
+                            totalsSection.className = 'daily-totals';
+                            totalsSection.innerHTML = `
+                                <h4>Daily Totals</h4>
+                                <p>Total Calories: ${day.totalNutrition.calories || 'N/A'} | 
+                                   Total Protein: ${day.totalNutrition.protein || 'N/A'} | 
+                                   Total Carbs: ${day.totalNutrition.carbs || 'N/A'}</p>
+                            `;
+                            daySection.appendChild(totalsSection);
+                        }
+                        
+                        mealPlanContainer.appendChild(daySection);
+                    });
+                    
+                    // Add summary section (simplified)
+                    if (data.summary) {
+                        const summarySection = document.createElement('div');
+                        summarySection.className = 'meal-plan-summary';
+                        summarySection.innerHTML = `
+                            <h3>Plan Summary</h3>
+                            <p>Total Days: ${data.summary.totalDays || 'N/A'}</p>
+                            <p>Average Daily Calories: ${data.summary.averageCalories || 'N/A'}</p>
+                            ${data.summary.recommendations ? `
+                                <h4>Recommendations</h4>
+                                <ul>
+                                    ${data.summary.recommendations.slice(0, 3).map(rec => `<li>${rec}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                        `;
+                        mealPlanContainer.appendChild(summarySection);
+                    }
+                    
+                    resultsContainer.appendChild(mealPlanContainer);
+                    resultsContainer.style.display = 'block';
+                } catch (error) {
+                    console.error('Error displaying meal plan:', error);
+                    errorMessage.textContent = 'Failed to display meal plan: ' + error.message;
+                    errorMessage.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

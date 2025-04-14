@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Generator - CulinaryAI</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #e74c3c;
+      --accent: #3498db;
+      --light: #ffffff;
+      --dark: #2c3e50;
+      --text: #333333;
+      --background: #f8f9fa;
+      --border: #e9ecef;
+      --success: #2ecc71;
+      --warning: #f1c40f;
+      --info: #3498db;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .header h1 {
+      font-size: 2.8rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      color: var(--text);
+      opacity: 0.8;
+    }
+
+    .generation-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+
+    .generation-option {
+      background: var(--light);
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid var(--border);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .generation-option:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .generation-option i {
+      font-size: 3.5rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .generation-option h3 {
+      font-size: 1.6rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+
+    .generation-option p {
+      font-size: 1.1rem;
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .generation-options {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Recipe Generator</h1>
+      <p>Choose your preferred method to generate personalized recipes</p>
+    </div>
+
+    <div class="generation-options">
+      <a href="/mood-based" class="generation-option">
+        <i class="fas fa-smile"></i>
+        <h3>Mood Based</h3>
+        <p>Get personalized recipes that match your current mood and emotional state</p>
+      </a>
+
+      <a href="/ar-food" class="generation-option">
+        <i class="fas fa-camera"></i>
+        <h3>AR Based</h3>
+        <p>Point your camera at ingredients to get instant recipe recommendations</p>
+      </a>
+
+      <a href="/voice-input" class="generation-option">
+        <i class="fas fa-microphone"></i>
+        <h3>Voice Based</h3>
+        <p>Just tell us what you want to cook and get instant recipe suggestions</p>
+      </a>
+    </div>
+  </div>
+</body>
+</html> 

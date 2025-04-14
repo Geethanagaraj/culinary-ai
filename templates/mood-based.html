@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Based Recipes - CulinaryAI</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #2c3e50;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+      color: #2c3e50;
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 1.3rem;
+      color: #34495e;
+      opacity: 0.9;
+    }
+
+    .mood-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .mood-option {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .mood-option:hover {
+      transform: translateY(-5px);
+      border-color: #3498db;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .mood-option i {
+      font-size: 3.5rem;
+      color: #3498db;
+      margin-bottom: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .mood-option:hover i {
+      transform: scale(1.1);
+    }
+
+    .mood-option h3 {
+      color: #2c3e50;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .mood-option p {
+      font-size: 1.2rem;
+      color: #34495e;
+      opacity: 0.9;
+    }
+
+    .suggestions {
+      display: none;
+    }
+
+    .suggestion-item {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .suggestion-item:hover {
+      transform: translateY(-5px);
+      border-color: #3498db;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      background: rgba(255, 255, 255, 0.98);
+    }
+
+    .suggestion-item h3 {
+      color: #2c3e50;
+      font-size: 2rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #3498db;
+      transition: color 0.3s ease;
+    }
+
+    .suggestion-item:hover h3 {
+      color: #3498db;
+    }
+
+    .suggestion-item p {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      color: #34495e;
+      line-height: 1.8;
+    }
+
+    .suggestion-item .benefits {
+      margin-top: 25px;
+      padding: 25px;
+      background: rgba(248, 249, 250, 0.8);
+      border-radius: 12px;
+      border: 1px solid rgba(52, 152, 219, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .suggestion-item:hover .benefits {
+      background: rgba(248, 249, 250, 0.95);
+      border-color: rgba(52, 152, 219, 0.4);
+    }
+
+    .suggestion-item .benefits h4 {
+      color: #3498db;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .suggestion-item .benefits-list li {
+      margin-bottom: 12px;
+      position: relative;
+      font-size: 1.2rem;
+      color: #34495e;
+      line-height: 1.6;
+      transition: color 0.3s ease;
+    }
+
+    .suggestion-item:hover .benefits-list li {
+      color: #2c3e50;
+    }
+
+    .suggestion-item .benefits-list li::before {
+      content: "✓";
+      color: #2ecc71;
+      position: absolute;
+      left: -25px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      transition: transform 0.3s ease;
+    }
+
+    .suggestion-item:hover .benefits-list li::before {
+      transform: scale(1.1);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      display: none;
+    }
+
+    .loading i {
+      font-size: 3rem;
+      color: #3498db;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+
+    .loading p {
+      font-size: 1.3rem;
+      color: #34495e;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .mood-options {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 2.2rem;
+      }
+
+      .header p {
+        font-size: 1.1rem;
+      }
+
+      .mood-option h3 {
+        font-size: 1.5rem;
+      }
+
+      .mood-option p {
+        font-size: 1.1rem;
+      }
+
+      .suggestion-item h3 {
+        font-size: 1.8rem;
+      }
+
+      .suggestion-item p {
+        font-size: 1.1rem;
+      }
+
+      .benefits-list li {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Mood Based Recipes</h1>
+      <p>Select your current mood to get personalized food suggestions</p>
+    </div>
+
+    <div class="mood-options">
+      <div class="mood-option" onclick="selectMood('happy')">
+        <i class="fas fa-laugh"></i>
+        <h3>Happy & Energetic</h3>
+        <p>Bright, colorful dishes to match your mood</p>
+      </div>
+
+      <div class="mood-option" onclick="selectMood('relaxed')">
+        <i class="fas fa-spa"></i>
+        <h3>Relaxed & Calm</h3>
+        <p>Comforting, soothing recipes</p>
+      </div>
+
+      <div class="mood-option" onclick="selectMood('adventurous')">
+        <i class="fas fa-mountain"></i>
+        <h3>Adventurous</h3>
+        <p>Exciting, bold flavors to explore</p>
+      </div>
+
+      <div class="mood-option" onclick="selectMood('cozy')">
+        <i class="fas fa-home"></i>
+        <h3>Cozy & Comfortable</h3>
+        <p>Warm, familiar comfort foods</p>
+      </div>
+    </div>
+
+    <div class="loading" id="loading">
+      <i class="fas fa-spinner"></i>
+      <p>Generating personalized suggestions...</p>
+    </div>
+
+    <div class="suggestions" id="suggestions"></div>
+  </div>
+
+  <script>
+    let currentMood = '';
+
+    async function selectMood(mood) {
+      currentMood = mood;
+      const loading = document.getElementById('loading');
+      const suggestions = document.getElementById('suggestions');
+      const moodOptions = document.querySelector('.mood-options');
+      
+      // Hide mood options and show loading
+      moodOptions.style.display = 'none';
+      loading.style.display = 'block';
+      suggestions.style.display = 'none';
+      suggestions.innerHTML = '';
+
+      try {
+        const response = await fetch('/generate_mood_recipe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ mood: mood })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to generate suggestions');
+        }
+
+        const data = await response.json();
+        displaySuggestions(data);
+      } catch (error) {
+        console.error('Error:', error);
+        suggestions.innerHTML = `
+          <div class="suggestion-item">
+            <h3>Error</h3>
+            <p>Failed to generate suggestions. Please try again.</p>
+            <button onclick="resetMoodSelection()" style="
+              background: #3498db;
+              color: white;
+              border: none;
+              padding: 10px 20px;
+              border-radius: 5px;
+              cursor: pointer;
+              margin-top: 20px;
+              font-size: 1.1rem;
+              transition: all 0.3s ease;
+            ">Try Again</button>
+          </div>
+        `;
+      } finally {
+        loading.style.display = 'none';
+        suggestions.style.display = 'block';
+      }
+    }
+
+    function resetMoodSelection() {
+      const moodOptions = document.querySelector('.mood-options');
+      const suggestions = document.getElementById('suggestions');
+      const loading = document.getElementById('loading');
+      
+      moodOptions.style.display = 'grid';
+      suggestions.style.display = 'none';
+      loading.style.display = 'none';
+      suggestions.innerHTML = '';
+      currentMood = '';
+    }
+
+    function displaySuggestions(suggestions) {
+      const suggestionsDiv = document.getElementById('suggestions');
+      suggestionsDiv.innerHTML = '';
+
+      suggestions.forEach(suggestion => {
+        const suggestionItem = document.createElement('div');
+        suggestionItem.className = 'suggestion-item';
+        suggestionItem.innerHTML = `
+          <h3>${suggestion.name}</h3>
+          <p>${suggestion.description}</p>
+          <div class="benefits">
+            <h4>Benefits</h4>
+            <ul class="benefits-list">
+              ${suggestion.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
+            </ul>
+          </div>
+          <div style="
+            text-align: center;
+            margin-top: 20px;
+            color: #3498db;
+            font-weight: 600;
+            font-size: 1.2rem;
+          ">Click to view detailed recipe</div>
+        `;
+
+        // Add click event to show recipe details
+        suggestionItem.addEventListener('click', () => {
+          window.location.href = `/recipe-details?food=${encodeURIComponent(suggestion.name)}&mood=${encodeURIComponent(currentMood)}`;
+        });
+
+        suggestionsDiv.appendChild(suggestionItem);
+      });
+
+      // Add a back button
+      const backButton = document.createElement('button');
+      backButton.textContent = 'Back to Moods';
+      backButton.style.cssText = `
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 20px auto;
+        display: block;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+      `;
+      backButton.onclick = resetMoodSelection;
+      suggestionsDiv.appendChild(backButton);
+    }
+  </script>
+</body>
+</html> 
