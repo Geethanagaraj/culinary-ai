@@ -110,22 +110,35 @@
 
     /* Hero Section */
     .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding-top: 100px;
       position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('/static/images/hero-pattern.png');
+      opacity: 0.1;
+      animation: moveBackground 20s linear infinite;
     }
 
     .hero-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
+      position: relative;
+      z-index: 2;
+      padding: 120px 0;
     }
 
-    .hero-text {
-      position: relative;
+    .hero h1 {
+      font-size: 4rem;
+      background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: titleGlow 2s ease-in-out infinite;
     }
 
     .dancing-chef {
@@ -206,8 +219,12 @@
     }
 
     .btn-primary {
-      background: var(--primary);
-      color: var(--light);
+      background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+      border: none;
+      padding: 12px 30px;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
     }
 
     .btn-secondary {
@@ -484,7 +501,7 @@
     /* Features Section */
     .features {
       padding: 100px 0;
-      background: var(--light);
+      background: linear-gradient(to bottom, #ffffff, #f8f9fa);
     }
 
     .section-title {
@@ -501,29 +518,24 @@
     }
 
     .feature-card {
-      background: var(--light);
-      padding: 40px 30px;
-      border-radius: 4px;
-      transition: var(--transition);
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      border: none;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
 
     .feature-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--secondary);
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     }
 
     .feature-icon {
-      width: 60px;
-      height: 60px;
-      background: var(--accent);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-      color: var(--primary);
-      font-size: 24px;
+      font-size: 3rem;
+      background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.5rem;
     }
 
     .feature-title {
@@ -608,17 +620,26 @@
       gap: 30px;
     }
 
-    .testimonial-card {
-      background: var(--light);
-      padding: 40px 30px;
-      border-radius: 4px;
-      transition: var(--transition);
-      border: 1px solid rgba(0, 0, 0, 0.1);
+    .testimonial {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      padding: 2rem;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
     }
 
-    .testimonial-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--secondary);
+    .testimonial:hover {
+      transform: scale(1.02);
+    }
+
+    .testimonial img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ff6b6b;
     }
 
     .testimonial-text {
@@ -662,9 +683,9 @@
 
     /* Footer */
     footer {
-      background: var(--primary);
-      padding: 60px 0;
-      color: var(--light);
+      background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
+      color: white;
+      padding: 4rem 0;
     }
 
     .footer-content {
@@ -917,6 +938,75 @@
       .contact-content {
         grid-template-columns: 1fr;
       }
+    }
+
+    /* Animations */
+    @keyframes moveBackground {
+      0% { background-position: 0 0; }
+      100% { background-position: 100% 100%; }
+    }
+
+    @keyframes titleGlow {
+      0%, 100% { text-shadow: 0 0 20px rgba(255, 107, 107, 0.3); }
+      50% { text-shadow: 0 0 30px rgba(255, 107, 107, 0.5); }
+    }
+
+    /* Enhanced Navigation */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Enhanced Footer */
+    footer {
+      background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
+      color: white;
+      padding: 4rem 0;
+    }
+
+    .footer-link {
+      color: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: #ff6b6b;
+      text-decoration: none;
+    }
+
+    /* Scroll Animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
@@ -1219,6 +1309,23 @@
 
     document.querySelectorAll('.feature-card, .step, .testimonial-card').forEach(el => {
       observer.observe(el);
+    });
+
+    // Scroll Animation
+    document.addEventListener('DOMContentLoaded', function() {
+      const fadeElements = document.querySelectorAll('.fade-in');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      fadeElements.forEach(element => {
+        observer.observe(element);
+      });
     });
   </script>
 </body>
